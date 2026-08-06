@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model CreditRequest {
+  id                 String           @id @default(uuid())
+  type               LoanType
+  fullName           String           @map("full_name")
+  contactNumber      String           @map("contact_number")
+  voterId            String           @default("") @map("id_number")
+  dateOfBirth        DateTime?        @map("date_of_birth")
+  age                Int?             @map("age")
+  sex                String?          @map("sex")
+  address            String           @default("") @map("address")
+  profession         String           @default("") @map("profession")
+  loanAmount         Decimal          @db.Decimal(12, 2) @map("loan_amount")
+  interestRate       Decimal          @default(0) @db.Decimal(5, 2) @map("interest_rate")
+  loanTerm           String           @default("") @map("loan_term")
+  guaranteeType      String[]         @default([]) @map("guarantee_type")
+  guaranteeConfirmed Boolean          @default(false) @map("guarantee_confirmed")
+  receiverName       String           @default("") @map("receiver_name")
+  bankPlatform       String           @default("") @map("bank_platform")
+  email              String?          @map("email")
+  currency           String?          @map("currency")
+  purpose            String?          @map("purpose")
+  photoUrl           String?          @map("photo_url")
+  documentUrl        String?          @map("document_url")
+  bankStatementUrl   String?          @map("bank_statement_url")
+  status             ApplicationStatus @default(pending)
+  trackingCode       String?          @unique @map("tracking_code")
+  dueDate            DateTime?        @map("due_date")
+  createdAt          DateTime         @default(now()) @map("created_at")
+  updatedAt          DateTime         @updatedAt @map("updated_at")
+
+  @@map("credit_requests")
+}
+
+enum LoanType {
+  domestic
+  international
+}
+
+enum ApplicationStatus {
+  pending
+  approved
+  rejected
+}
+
+model GalleryImage {
+  id          String   @id @default(uuid())
+  title       String   @default("")
+  description String   @default("")
+  imageUrl    String   @map("image_url")
+  storagePath String   @default("") @map("storage_path")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("gallery_images")
+}
+
+model ExchangeRate {
+  id        String   @id @default(uuid())
+  base      String
+  target    String
+  rate      Decimal  @db.Decimal(18, 8)
+  fetchedAt DateTime @default(now())
+
+  @@map("exchange_rates")
+}
+
+model LoanSetting {
+  id            String   @id @default("default")
+  interestRate  Decimal  @default(10) @db.Decimal(5, 2) @map("interest_rate")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("loan_settings")
+}
