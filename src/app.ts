@@ -32,10 +32,11 @@ app.use(helmet({
     preload: true
   }
 }));
-const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000')
-  .split(',')
-  .map((o) => o.trim())
-  .filter(Boolean);
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://badinas01.tl',
+  'https://www.badinas01.tl'
+];
 
 app.use(cors({
   origin: (origin, callback) => {
